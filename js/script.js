@@ -5,7 +5,34 @@ const colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "bei
 //     document.getElementsByTagName('body')[0].style.backgroundColor = randomColor;
 // }, 3000)
 
-setInterval(() => {
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    document.getElementsByTagName('body')[0].style.backgroundColor = randomColor;
-}, 2000)
+// setInterval(() => {
+//     const randomColor = colors[Math.floor(Math.random() * colors.length)];
+//     document.getElementsByTagName('body')[0].style.backgroundColor = randomColor;
+// }, 2000)
+
+function makeRequest() {
+    let httpRequest = new XMLHttpRequest();
+
+    httpRequest.onreadystatechange = () => {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+            const data = JSON.parse(httpRequest.responseText);
+            const element = document.createElement('div');
+            element.classList = 'github-user';
+
+            element.innerHTML = `
+                <img src="${data.avatar_url}">
+                <p> Name: ${data.name} </p>
+                <p> Location: ${data.location} </p>
+            `;
+            const mainSection = document.getElementById('main');
+            mainSection.appendChild(element);
+          } else {
+            console.log("There was a problem with the request.");
+          }
+        }
+    };
+
+    httpRequest.open("GET", "https://api.github.com/users/mabdullahz");
+    httpRequest.send();
+}
